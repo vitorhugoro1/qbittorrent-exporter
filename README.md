@@ -45,8 +45,8 @@ docker run \
 
 - The session cookie is now named `QBT_SID_<port>` instead of `SID`; this is handled automatically.
 - qBittorrent validates the `Host` header against the port it listens on. When running qBittorrent in Docker, make
-  sure the published port matches the WebUI port inside the container (e.g. `-p 8080:8080`, not `-p 18080:8080`), or
-  add the hostname to *Server domains* in the WebUI settings. Otherwise the exporter gets `401 Unauthorized`.
+  sure the published port matches the WebUI port inside the container (e.g. `-p 8080:8080`, not `-p 18080:8080`).
+  Otherwise the exporter gets `401 Unauthorized`.
 - Torrent states `pausedUP` and `pausedDL` were renamed to `stoppedUP` and `stoppedDL`. They appear in the `state`
   label of `qbittorrent_torrent_info` and the `name` label of `qbittorrent_torrent_states`, so update any Grafana
   panels or alerts that filter on `paused*`.
