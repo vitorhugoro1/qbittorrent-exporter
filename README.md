@@ -4,8 +4,8 @@
 
 <img src="https://github.com/caseyscarborough/qbittorrent-grafana-dashboard/blob/master/images/logo.png" width=100> <img src="https://github.com/caseyscarborough/qbittorrent-grafana-dashboard/blob/master/images/prometheus.png" width=100>
 
-This app is a Prometheus exporter for the qBittorrent application. You must have version 4.1.0 of qBittorrent or higher
-for this plugin to work. qBittorrent 5.x is supported (verified against 5.3.0).
+This app is a Prometheus exporter for the qBittorrent application. It has been verified against qBittorrent 4.6.7 and 5.3.0.
+Older versions (including 4.1.0 - 4.5.x) have not been tested with this fork and may not work.
 
 This is especially useful when integrated with
 the [qbittorrent-grafana-dashboard](https://github.com/caseyscarborough/qbittorrent-grafana-dashboard).
@@ -38,7 +38,7 @@ docker run \
 |   `-e QBITTORRENT_PORT`   |   The qBittorrent port. Ignored when using `QBITTORRENT_BASE_URL`.   |         `8080`          |
 | `-e QBITTORRENT_PROTOCOL` | The qBittorrent protocol. Ignored when using `QBITTORRENT_BASE_URL`. |         `http`          |
 
-> **Note:** qBittorrent 5.x no longer ships with the default `admin`/`adminadmin` credentials. Set your own WebUI
+> **Note:** recent qBittorrent versions (4.6.1 and newer) no longer ship with the default `admin`/`adminadmin` credentials. Set your own WebUI
 > username and password in qBittorrent and pass them to the exporter, otherwise login will fail.
 
 ## qBittorrent 5.x notes
