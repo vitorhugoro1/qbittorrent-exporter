@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM eclipse-temurin:17-jre
 # Run ./gradlew installDist before running Docker build
 
 COPY build/install/qbittorrent-exporter /opt/qbittorrent-exporter

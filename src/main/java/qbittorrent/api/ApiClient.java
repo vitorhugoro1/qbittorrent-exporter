@@ -14,13 +14,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ApiClient {
@@ -67,24 +65,24 @@ public class ApiClient {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             final String body = response.body();
             final int status = response.statusCode();
-            if (status != 200) {
+            if (status < 200 || status >= 300) {
                 LOGGER.warn("Login Error: {}", body);
                 throw new ApiException("Could not log in: (" + status + ") " + body);
             }
 
-            final HttpHeaders headers = response.headers();
-            final Optional<String> setCookie = headers.firstValue("Set-Cookie");
-
-            if (setCookie.isEmpty()) {
-                throw new ApiException("Could not get auth cookie from qBittorrent");
+            // Bad credentials are answered with 200 and "Fails."; success is "Ok." (200) or empty (204, qBittorrent 5.x)
+            if ("Fails.".equals(body.trim())) {
+                LOGGER.warn("Login Error: {}", body);
+                throw new ApiException("Could not log in: (" + status + ") " + body);
             }
 
-            final String setCookieValue = setCookie.get();
-            if (!setCookieValue.contains("SID=")) {
-                throw new ApiException("Could not get auth cookie from qBittorrent");
-            }
-
-            authCookie = setCookie.get().split(";")[0].split("=")[1];
+            // The cookie name is SID before qBittorrent 5.0 and QBT_SID_<port> afterwards
+            final String cookie = response.headers().allValues("Set-Cookie").stream()
+                .map(value -> value.split(";")[0].trim())
+                .filter(value -> value.matches("(?:QBT_)?SID(?:_\\d+)?=.+"))
+                .findFirst()
+                .orElseThrow(() -> new ApiException("Could not get auth cookie from qBittorrent"));
+            authCookie = cookie;
             final String version = getVersion();
             LOGGER.info("Successfully logged in with qBittorrent version {}.", version);
         } catch (IOException e) {
@@ -127,7 +125,7 @@ public class ApiClient {
         final String url = baseUrl + "/api/v2" + apiUrl;
         final HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
-            .header("Cookie", "SID=" + authCookie)
+            .header("Cookie", authCookie)
             .GET()
             .build();
 
