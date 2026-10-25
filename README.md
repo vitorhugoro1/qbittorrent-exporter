@@ -5,7 +5,7 @@
 <img src="https://github.com/caseyscarborough/qbittorrent-grafana-dashboard/blob/master/images/logo.png" width=100> <img src="https://github.com/caseyscarborough/qbittorrent-grafana-dashboard/blob/master/images/prometheus.png" width=100>
 
 This app is a Prometheus exporter for the qBittorrent application. You must have version 4.1.0 of qBittorrent or higher
-for this plugin to work.
+for this plugin to work. Tested against the qBittorrent 5.x WebUI API (5.2.2).
 
 This is especially useful when integrated with
 the [qbittorrent-grafana-dashboard](https://github.com/caseyscarborough/qbittorrent-grafana-dashboard).

@@ -50,7 +50,7 @@ public class QbtHttpHandler implements HttpHandler {
             collector.setGlobalSessionUploadedBytes(serverState.getUpInfoData());
             collector.setGlobalDownloadSpeedBytes(serverState.getDlInfoSpeed());
             collector.setGlobalUploadSpeedBytes(serverState.getUpInfoSpeed());
-            collector.setGlobalRatio(Double.parseDouble(serverState.getGlobalRatio()));
+            collector.setGlobalRatio(parseRatio(serverState.getGlobalRatio()));
             collector.setAppDownloadRateLimitBytes(serverState.getDlRateLimit());
             collector.setAppUploadRateLimitBytes(serverState.getUpRateLimit());
             collector.setAppAlternateDownloadRateLimitBytes(preferences.getAltDlLimit());
@@ -93,6 +93,14 @@ public class QbtHttpHandler implements HttpHandler {
             exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, CONTENT_TYPE);
             exchange.setStatusCode(500);
             exchange.getResponseSender().send("An error occurred. " + e.getMessage());
+        }
+    }
+
+    private static double parseRatio(final String ratio) {
+        try {
+            return Double.parseDouble(ratio);
+        } catch (NumberFormatException | NullPointerException e) {
+            return 0;
         }
     }
 }
